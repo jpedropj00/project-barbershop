@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Barbershop {
+  id          String               @id @default(uuid())
+  name        String
+  adress      String
+  description String
+  imgUrl      String
+  phones      String[]
+  services    BarbershopServices[]
+}
+
+model BarbershopServices {
+  id           String     @id @default(uuid())
+  name         String
+  imgUrl       String
+  barbershopid String
+  barbershop   Barbershop @relation(fields: [barbershopid], references: [id])
+  priceInCents Int
+}
+
+model Booking {
+  id           String   @id @default(uuid())
+  serviceId    String
+  barbershopid String
+  date         DateTime @db.Timestamptz
+  cancelled    Boolean? @default(false)
+  cancelledAt  DateTime @db.Timestamptz
+}
